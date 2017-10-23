@@ -1,0 +1,24 @@
+{
+  "name": "imdb-dbs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "adanilev",
+  "license": "MIT",
+  "description": "Loading and querying IMDB data with different DBs - PostgreSQL, MongoDB and Neo4j",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adanilev/imdb-dbs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adanilev/imdb-dbs/issues"
+  },
+  "homepage": "https://github.com/adanilev/imdb-dbs#readme",
+  "dependencies": {
+    "async": "^2.5.0",
+    "firstline": "^1.2.1",
+    "mongodb": "^2.2.33"
+  }
+}

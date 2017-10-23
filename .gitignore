@@ -1,0 +1,5 @@
+data-files/*
+node_modules/
+.env
+.DS_Store
+mongo/tmp.js
