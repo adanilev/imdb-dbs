@@ -5,7 +5,6 @@ Loading and querying IMDB data using different databases just for kicks.
 A work in progress...
 
 
-
 ## Queries
 
 1. For a given actor, find their 5 most highly rated films
@@ -17,37 +16,18 @@ A work in progress...
 7. For a given person (actor or cast), find the 5 people they've worked with the most
 8. 6 degrees of Kevin Bacon - given 2 actors, find the shortest link between them
 
-### Updates
-```
-db.getCollection('titleBasics').updateMany(
-    { 'endYear': '\\N' }, 
-    { $set: {'endYear': null} }
-);
-
-db.getCollection('titleBasics').updateMany(
-    { 'runtimeMinutes': '\\N' }, 
-    { $set: {'runtimeMinutes': null} }
-);
-
-db.getCollection('nameBasics').updateMany(
-    { 'deathYear': '\\N' }, 
-    { $set: {'deathYear': null} }
-);
-```
-
-
 
 ## Mongo
 
 ### Start docker:
 
 ```bash
-cd /Users/adanilev/dev/imdb-dbs && \
+IMDB_MONGO_HOME=/Users/adanilev/dev/imdb-dbs && \
 docker run -d \
   --name imdb-mongo \
-  --volume $PWD/data-files/mongo:/data/db \
-  --volume $PWD/data-files/originals-short:/data/import \
-  --volume $PWD/mongo/scripts:/scripts \
+  --volume ${IMDB_MONGO_HOME}/data-files/mongo:/data/db \
+  --volume ${IMDB_MONGO_HOME}/data-files/originals-short:/data/import \
+  --volume ${IMDB_MONGO_HOME}/mongo/scripts:/scripts \
   --rm \
   --publish 127.0.0.1:27017:27017 mongo
 ```

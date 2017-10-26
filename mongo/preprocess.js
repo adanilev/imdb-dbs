@@ -5,22 +5,20 @@ var fs = require('fs');
 var async = require('async');
 var firstline = require('firstline');
 
-var config = JSON.parse(fs.readFileSync('./config.json'));
-var datafileDir = '/Users/adanilev/dev/imdb-dbs/data-files/originals/';
-var datafileDirShort = '/Users/adanilev/dev/imdb-dbs/data-files/originals-short/';
 
+exports.preprocess = function(config) {
+// Runs the functions in the array one after the other
+  async.waterfall([
+    getHeaderData,
+    setNulls
+  ], function(err, res) {
+    if (err)
+      console.error('Error in final waterfall callback: ' + err);
 
-async.waterfall([
-  getHeaderData,
-  setNulls
-], function(err, res) {
-  if (err)
-    console.error('Error in final callback: ' + err);
-
-  console.log('Result in final callback: ');
-  console.log(res);
-});
-
+    console.log('Result in final callback: ');
+    console.log(res);
+  });
+}
 
 
 // Return an object with all of the header data from the datasets
@@ -29,7 +27,7 @@ function getHeaderData(callback) {
 
   async.each(
     // Pass the values of this array
-    datasets,
+    config.datasets,
     // To this function
     function(dataset, cb) {
       firstline('../data-files/originals/' + dataset.filename)
@@ -49,12 +47,16 @@ function getHeaderData(callback) {
     function(err) {
       if (err)
         console.error('getHeaderData error: ' + err);
-
+        
+      console.log('getHeaderData result: ' + headerData);
       callback(null, headerData);
     });
 }
 
 
 function setNulls(headerData, callback) {
-  // do stuff
+  // db.getCollection('titleBasics').updateMany(
+  //   { 'endYear': '\\N' }, 
+  //   { $set: {'endYear': null} }
+  // );
 }
