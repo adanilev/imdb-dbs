@@ -6,23 +6,26 @@ var async = require('async');
 var firstline = require('firstline');
 
 
-exports.preprocess = function(config) {
-// Runs the functions in the array one after the other
+exports.preprocess = function(config, callback) {
+  console.log("Pre-processing data");
+  // Runs the functions in the array one after the other
   async.waterfall([
-    getHeaderData,
+    function(cb) {
+      return getHeaderData(config, cb);
+    },
     setNulls
   ], function(err, res) {
     if (err)
       console.error('Error in final waterfall callback: ' + err);
 
-    console.log('Result in final callback: ');
-    console.log(res);
+    console.log('Done pre-processing data');
+    callback();
   });
 }
 
 
 // Return an object with all of the header data from the datasets
-function getHeaderData(callback) {
+function getHeaderData(config, callback) {
   var headerData = [];
 
   async.each(
@@ -47,16 +50,52 @@ function getHeaderData(callback) {
     function(err) {
       if (err)
         console.error('getHeaderData error: ' + err);
-        
-      console.log('getHeaderData result: ' + headerData);
       callback(null, headerData);
     });
 }
 
 
+// Replace \\N with null for all blank fields
 function setNulls(headerData, callback) {
-  // db.getCollection('titleBasics').updateMany(
-  //   { 'endYear': '\\N' }, 
-  //   { $set: {'endYear': null} }
-  // );
+  var MongoClient = require('mongodb').MongoClient;
+  var url = 'mongodb://localhost:27017/imdb';
+
+  MongoClient.connect(url, function(err, db) {
+
+    // For each file
+    async.eachSeries(headerData, function(hd, cbk) {
+      console.log('...Setting nulls in ' + hd.collectionName);
+      var collection = db.collection(hd.collectionName);
+      
+      // For each header/column
+      async.eachSeries(hd.headers, function(header, cb) {
+        var findQuery = {};
+        var setStmt = {};
+        findQuery[header] = "\\N";
+        setStmt[header] = null;
+        
+        // Set any \\N value to null
+        collection.updateMany(findQuery, {$set: setStmt}, function(err, res) {
+          if (err) {
+            cb(err);
+          } else {
+            console.log('......' + res.modifiedCount + ' ' + header + ' records updated');
+            cb();
+          }
+        });
+        
+      }, function(err) {
+        if (err)
+          console.error('Error in setNulls async: ' + err);
+        cbk();
+      });
+
+    }, function(err) {
+      if (err)
+        console.error('Error in setNulls async: ' + err);
+      db.close();
+      callback();
+    });
+
+  });
 }

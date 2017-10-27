@@ -31,9 +31,3 @@ docker run -d \
   --rm \
   --publish 127.0.0.1:27017:27017 mongo
 ```
-
-### Run the import script
-```bash
-docker exec -it imdb-mongo bash
-./scripts/dataImport.sh
-```

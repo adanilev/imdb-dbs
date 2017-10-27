@@ -1,4 +1,5 @@
 var importData = require('./importData');
+var preprocess = require('./preprocess');
 
 var fs = require('fs');
 var async = require('async');
@@ -11,7 +12,10 @@ async.series([
   },
   function(next) {
     importData.mongoImport(config, next);
-  }
+  },
+  function(next) {
+    preprocess.preprocess(config, next);
+  },
 ],
 function(err, results) {
   if (err) {
