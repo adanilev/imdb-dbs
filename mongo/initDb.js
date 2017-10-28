@@ -7,20 +7,20 @@ var config = JSON.parse(fs.readFileSync('./config.json'));
 
 
 async.series([
-  function(next) {
-    importData.createShortDatafiles(config, 1000, next);
+  function (next) {
+    importData.createShortDatafiles(config, 1001, next);
   },
-  function(next) {
+  function (next) {
     importData.mongoImport(config, next);
   },
-  function(next) {
+  function (next) {
     preprocess.preprocess(config, next);
-  },
-],
-function(err, results) {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log('ALL DONE!!');
   }
-});
+],
+  function (err, results) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('ALL DONE!!');
+    }
+  });
