@@ -17,17 +17,15 @@ A work in progress...
 8. 6 degrees of Kevin Bacon - given 2 actors, find the shortest link between them
 
 
+## Install
+1. Clone this repo and cd to it
+1. Download the IMDB datasets and unzip them into ./data-files/originals
+
+
 ## Mongo
 
-### Start docker:
+Start the database and import the data. Invoke with -s flag to use truncated datasets to make testing quicker
 
 ```bash
-IMDB_MONGO_HOME=/Users/adanilev/dev/imdb-dbs && \
-docker run -d \
-  --name imdb-mongo \
-  --volume ${IMDB_MONGO_HOME}/data-files/mongo:/data/db \
-  --volume ${IMDB_MONGO_HOME}/data-files/originals-short:/data/import \
-  --volume ${IMDB_MONGO_HOME}/mongo/scripts:/scripts \
-  --rm \
-  --publish 127.0.0.1:27017:27017 mongo
+./mongo/start.sh
 ```

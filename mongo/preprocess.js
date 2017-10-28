@@ -94,7 +94,7 @@ function setNulls(headerData, callback) {
       if (err) {
         console.error('Error in setNulls: ' + err);
       } else {
-        console.log('Done setting null values!');
+        console.log('Done setting null values');
         db.close();
         callback();
       }
@@ -154,7 +154,7 @@ function convertToArrays(callback) {
       if (err) {
         callback(err);
       } else {
-        console.log('Done converting to arrays!');
+        console.log('Done converting to arrays');
         db.close();
         callback();
       }

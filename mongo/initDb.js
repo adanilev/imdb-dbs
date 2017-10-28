@@ -21,6 +21,6 @@ async.series([
     if (err) {
       console.error(err);
     } else {
-      console.log('ALL DONE!!');
+      console.log('All done!!!');
     }
   });
