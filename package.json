@@ -18,6 +18,7 @@
   "homepage": "https://github.com/adanilev/imdb-dbs#readme",
   "dependencies": {
     "async": "^2.5.0",
+    "dotenv": "^4.0.0",
     "firstline": "^1.2.1",
     "mongodb": "^2.2.33"
   }

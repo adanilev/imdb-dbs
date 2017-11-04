@@ -1,5 +1,6 @@
-'use strict'
+"use strict";
 
-var mongo = require('./mongo/queries');
+require("dotenv").config();
+var mongo = require("./src/mongo/queries");
 
 mongo.getActorsTopRatedMovies();

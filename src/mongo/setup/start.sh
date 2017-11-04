@@ -29,7 +29,7 @@ docker run -d \
 # Run init script if previous command was successful
 if [ $? = 0 ]; then
   echo "Running initDb"
-  node ${IMDB_MONGO_HOME}/mongo/initDb.js
+  node initDb.js
 else
   exit 1
 fi
