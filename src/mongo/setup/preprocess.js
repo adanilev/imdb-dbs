@@ -11,7 +11,14 @@ exports.preprocess = function(config_, callback) {
   config = config_;
   // Runs the functions in the array one after the other
   async.waterfall(
-    [getHeaderData, setNulls, convertToArrays, embedRatings],
+    [
+      getHeaderData,
+      setNulls,
+      convertToArrays,
+      embedRatings,
+      embedCast,
+      embedAkas
+    ],
     function(err, res) {
       if (err) console.error('Error in final waterfall callback: ' + err);
 
@@ -218,7 +225,7 @@ function embedRatings(callback) {
   });
 }
 
-function embedPrincipleCast() {
+function embedCast(callback) {
   console.log('Embedding cast');
   var MongoClient = require('mongodb').MongoClient;
 
@@ -239,7 +246,7 @@ function embedPrincipleCast() {
       },
       {
         $addFields: {
-          principalCast: { $arrayElemAt: ['$tmpPrincipalCast2', 0] }
+          cast: { $arrayElemAt: ['$tmpPrincipalCast2', 0] }
         }
       },
       {
@@ -247,10 +254,55 @@ function embedPrincipleCast() {
           tmpPrincipalCast: 0,
           tmpPrincipalCast2: 0
         }
+      },
+      {
+        $out: 'titleBasics'
       }
     ],
     function(err, result) {
       console.log('...Done embedding cast');
+      db.close();
+      callback();
+    });
+  });
+}
+
+function embedAkas(callback) {
+  console.log('Embedding alternative titles');
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(config.db_url, function(err, db) {
+    db.collection('titleBasics').aggregate([
+      {
+        $lookup: {
+          from: 'titleAkas',
+          localField: 'tconst',
+          foreignField: 'titleId',
+          as: 'tmpAkas'
+        }
+      },
+      {
+        $addFields: {
+          akas: {
+            $map: {
+              input: '$tmpAkas',
+              as: 'anAka',
+              in: { $concat: ['$$anAka.title'] }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          tmpAkas: 0
+        }
+      },
+      {
+        $out: 'titleBasics'
+      }
+    ],
+    function(err, result) {
+      console.log('...Done embedding alternative titles');
       db.close();
       callback();
     });

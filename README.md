@@ -43,7 +43,6 @@ Start the database and import the data. Invoke with -s flag to use truncated dat
 Movies {
   _id
   tconst
-  titleAkas[]
   titleType
   primaryTitle
   originalTitle
@@ -51,12 +50,13 @@ Movies {
   startYear
   endYear
   runtimeMinutes
-  principleActors[]
   genres[]
-  rating {
+  ratings {
     avgRating
     numVotes
   }
+  cast[]
+  akas[]
 }
 
 

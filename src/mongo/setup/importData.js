@@ -13,15 +13,7 @@ exports.createShortDatafiles = function(config, numRows, callback) {
   async.eachSeries(
     config.datasets,
     function(ds, cb) {
-      var realCommand =
-        'head -' +
-        numRows +
-        ' ' +
-        datafileDir +
-        ds.filename +
-        ' > ' +
-        datafileDirShort +
-        ds.filename;
+      var realCommand = `head -${numRows} ${datafileDir}${ds.filename} > ${datafileDirShort}${ds.filename}`;
       var options = ['-c', realCommand];
 
       console.log('...creating short version: ' + ds.filename);
@@ -46,12 +38,7 @@ exports.mongoImport = function(config, callback) {
   async.eachSeries(
     config.datasets,
     function(ds, cb) {
-      var realCommand =
-        'docker exec imdb-mongo sh -c "mongoimport --db imdb --collection ' +
-        ds.collection +
-        ' --type tsv --headerline --file /data/import/' +
-        ds.filename +
-        '"';
+      var realCommand = `docker exec imdb-mongo sh -c "mongoimport --db imdb --collection ${ds.collection} --type tsv --headerline --file /data/import/${ds.filename}"`;
       var options = ['-c', realCommand];
 
       console.log('...importing: ' + ds.filename);
