@@ -16,7 +16,6 @@ exports.createShortDatafiles = function(config, numRows, callback) {
       var realCommand = `head -${numRows} ${datafileDir}${ds.filename} > ${datafileDirShort}${ds.filename}`;
       var options = ['-c', realCommand];
 
-      console.log('...creating short version: ' + ds.filename);
       executeCommand('sh', options, cb);
     },
     function(err) {

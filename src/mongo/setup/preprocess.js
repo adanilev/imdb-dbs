@@ -17,7 +17,9 @@ exports.preprocess = function(config_, callback) {
       convertToArrays,
       embedRatings,
       embedCast,
-      embedAkas
+      embedAkas,
+      embedCrew,
+      deleteCollections
     ],
     function(err, res) {
       if (err) console.error('Error in final waterfall callback: ' + err);
@@ -62,6 +64,7 @@ function getHeaderData(callback) {
 
 // Replace \\N with null for all blank fields
 function setNulls(headerData, callback) {
+  console.log('Setting nulls');
   var MongoClient = require('mongodb').MongoClient;
 
   MongoClient.connect(config.db_url, function(err, db) {
@@ -69,7 +72,6 @@ function setNulls(headerData, callback) {
     async.eachSeries(
       headerData,
       function(hd, cbk) {
-        console.log('...Setting nulls in ' + hd.collectionName);
         var collection = db.collection(hd.collectionName);
 
         // For each header/column
@@ -89,13 +91,6 @@ function setNulls(headerData, callback) {
               if (err) {
                 cb(err);
               } else {
-                console.log(
-                  '......' +
-                    res.modifiedCount +
-                    ' ' +
-                    header +
-                    ' records updated'
-                );
                 cb();
               }
             });
@@ -168,7 +163,6 @@ function convertToArrays(callback) {
           .aggregate(
             [{ $addFields: addStmt }, { $out: tc.collection }],
             function(err, result) {
-              console.log('...Converted fields in ' + tc.collection);
               cbk();
             }
           );
@@ -306,5 +300,96 @@ function embedAkas(callback) {
       db.close();
       callback();
     });
+  });
+}
+
+function embedCrew(callback) {
+  console.log('Embedding crew');
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(config.db_url, function(err, db) {
+    db.collection('titleBasics').aggregate([
+      {
+        $lookup: {
+          from: 'titleCrew',
+          localField: 'tconst',
+          foreignField: 'tconst',
+          as: 'tmpCrew'
+        }
+      },
+      {
+        $addFields: {
+          tmpCrew2: { $arrayElemAt: ['$tmpCrew', 0] }
+        }
+      },
+
+      {
+        $addFields: {
+          directors: {
+            $map: {
+              input: '$tmpCrew2.directors',
+              as: 'director',
+              in: { $concat: ['$$director'] }
+            }
+          }
+        }
+      },
+      {
+        $addFields: {
+          writers: {
+            $map: {
+              input: '$tmpCrew2.writers',
+              as: 'writer',
+              in: { $concat: ['$$writer'] }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          tmpCrew: 0,
+          tmpCrew2: 0
+        }
+      },
+      {
+        $out: 'titleBasics'
+      }
+    ],
+    function(err, result) {
+      console.log('...Done embedding crew');
+      db.close();
+      callback();
+    });
+  });
+}
+
+function deleteCollections(callback) {
+  console.log('Dropping unused collections');
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(config.db_url, function(err, db) {
+    var collections = [
+      'titleAkas',
+      'titleCrew',
+      'titleEpisode',
+      'titlePrincipals',
+      'titleRatings'
+    ];
+    async.eachSeries(
+      collections,
+      function(collection, cbk) {
+        db.dropCollection(collection);
+        cbk();
+      },
+      function(err) {
+        db.close();
+        if (err) {
+          console.error('Error in deleteCollections');
+        } else {
+          console.log('...Done dropping collections');
+          callback();
+        }
+      }
+    );
   });
 }
