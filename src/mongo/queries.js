@@ -1,15 +1,42 @@
 'use strict';
 
-// In progress
-exports.getActorsTopRatedMovies = function() {
+// Query 1
+exports.getActorsLatestTenMovies = function(actorId) {
   var MongoClient = require('mongodb').MongoClient;
 
   MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    var users = db.collection('nameBasics');
-    users.find({ nconst: 'nm0000001' }).toArray(function(err, docs) {
-      console.log('Found the following records');
-      console.log(docs);
-    });
+    db
+      .collection('movies')
+      .find({ cast: actorId })
+      .sort({ startYear: 1 })
+      .limit(10)
+      .toArray(function(err, docs) {
+        console.log('Found the following records');
+        docs.forEach(movie => {
+          console.log(`...${movie.primaryTitle}`);
+        });
+      });
+
+    db.close();
+  });
+};
+
+// Query 2
+exports.getActorsTopRatedMovies = function(actorId) {
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
+    db
+      .collection('movies')
+      .find({ cast: actorId })
+      .sort({ 'ratings.averageRating': -1, 'ratings.numVotes': -1 })
+      .limit(10)
+      .toArray(function(err, docs) {
+        console.log('Found the following records');
+        docs.forEach(movie => {
+          console.log(`...${movie.primaryTitle}`);
+        });
+      });
 
     db.close();
   });

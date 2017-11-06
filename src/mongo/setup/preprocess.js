@@ -19,7 +19,8 @@ exports.preprocess = function(config_, callback) {
       embedCast,
       embedAkas,
       embedCrew,
-      deleteCollections
+      deleteCollections,
+      renameCollections
     ],
     function(err, res) {
       if (err) console.error('Error in final waterfall callback: ' + err);
@@ -387,6 +388,41 @@ function deleteCollections(callback) {
           console.error('Error in deleteCollections');
         } else {
           console.log('...Done dropping collections');
+          callback();
+        }
+      }
+    );
+  });
+}
+
+function renameCollections(callback) {
+  console.log('Renaming collections');
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(config.db_url, function(err, db) {
+    var collections = [
+      { oldName: 'nameBasics', newName: 'actors' },
+      { oldName: 'titleBasics', newName: 'movies' }
+    ];
+    async.eachSeries(
+      collections,
+      function(collection, cbk) {
+        db
+          .collection(collection.oldName)
+          .rename(collection.newName, function(err) {
+            if (err) {
+              console.error('Error in rename collections ' + err);
+            } else {
+              cbk();
+            }
+          });
+      },
+      function(err) {
+        db.close();
+        if (err) {
+          console.error('Error in renameCollections');
+        } else {
+          console.log('...Done renaming collections');
           callback();
         }
       }

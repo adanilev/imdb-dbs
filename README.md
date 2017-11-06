@@ -40,7 +40,7 @@ Start the database and import the data. Invoke with -s flag to use truncated dat
 
 ### Schema
 
-Movies {
+movies {
   _id
   tconst
   titleType
@@ -60,7 +60,7 @@ Movies {
 }
 
 
-Actors {
+actors {
   _id
   nconst
   primaryName
