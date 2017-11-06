@@ -9,7 +9,7 @@ A work in progress...
 
 1. Show the latest 10 movies a given actor has been in
 1. For a given actor, find their 5 most highly rated films
-1. Find the top 10 films with more than n votes
+1. Find the top rated 10 films with more than n votes
 1. Given two people, list what movies they appeared in together
 1. List all of the cast and crew in a given movie
 1. Find the most prolific actor is a given period
