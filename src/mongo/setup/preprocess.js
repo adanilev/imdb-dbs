@@ -379,8 +379,13 @@ function deleteCollections(callback) {
     async.eachSeries(
       collections,
       function(collection, cbk) {
-        db.dropCollection(collection);
-        cbk();
+        db.dropCollection(collection, function(err, cb) {
+          if (err) {
+            console.error('Error dropping collection');
+          } else {
+            cbk();
+          }
+        });
       },
       function(err) {
         db.close();

@@ -65,3 +65,24 @@ exports.getTopRatedMoviesWithNVotes = function(numVotes) {
     db.close();
   });
 };
+
+// Query 4
+exports.getCostarredMovies = function(actorId1, actorId2) {
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
+    db
+      .collection('movies')
+      .aggregate([
+        { $match: { $and: [{ cast: actorId1 }, { cast: actorId2 }] } }
+      ])
+      .toArray(function(err, docs) {
+        console.log('Found the following records');
+        docs.forEach(movie => {
+          console.log(`...${movie.primaryTitle}`);
+        });
+      });
+
+    db.close();
+  });
+};
