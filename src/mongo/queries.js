@@ -115,3 +115,57 @@ exports.getCastAndCrew = function(titleId) {
     db.close();
   });
 };
+
+// Query 6
+exports.getProlificPeriodActor = function(startYear, endYear) {
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
+    db
+      .collection('movies')
+      .aggregate([
+        {
+          $match: {
+            $and: [
+              { startYear: { $gte: startYear } },
+              { startYear: { $lte: endYear } }
+            ]
+          }
+        },
+        { $project: { cast: 1 } },
+        { $unwind: '$cast' },
+        { $group: { _id: '$cast', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 1 }
+      ])
+      .toArray(function(err, docs) {
+        console.log('Most prolific actor in that period is:');
+        docs.forEach(actor => {
+          console.log(`...${actor._id} was in ${actor.count} movies`);
+        });
+      });
+
+    db.close();
+  });
+};
+
+// Query 7
+exports.getProlificGenreActors = function(genre) {
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
+    db
+      .collection('movies')
+      .aggregate([
+        //
+      ])
+      .toArray(function(err, docs) {
+        console.log('blah:');
+        docs.forEach(actor => {
+          console.log(`...${actor._id} was in ${count} movies`);
+        });
+      });
+
+    db.close();
+  });
+};

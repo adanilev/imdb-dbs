@@ -16,4 +16,7 @@ var mongo = require('./src/mongo/queries');
 // mongo.getCostarredMovies('nm0000428', 'nm0567363');
 
 // query 5
-mongo.getCastAndCrew('tt0000627');
+// mongo.getCastAndCrew('tt0000627');
+
+// query 6
+mongo.getProlificPeriodActor(1900, 1915);
