@@ -13,4 +13,7 @@ var mongo = require('./src/mongo/queries');
 // mongo.getTopRatedMoviesWithNVotes(1000);
 
 // query 4
-mongo.getCostarredMovies('nm0000428', 'nm0567363');
+// mongo.getCostarredMovies('nm0000428', 'nm0567363');
+
+// query 5
+mongo.getCastAndCrew('tt0000627');

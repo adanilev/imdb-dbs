@@ -86,3 +86,32 @@ exports.getCostarredMovies = function(actorId1, actorId2) {
     db.close();
   });
 };
+
+// Query 5
+exports.getCastAndCrew = function(titleId) {
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
+    db
+      .collection('movies')
+      .aggregate([
+        {
+          $match: { tconst: titleId }
+        },
+        {
+          $project: {
+            castAndCrew: { $concatArrays: ['$cast', '$directors', '$writers'] }
+          }
+        }
+      ])
+      .toArray(function(err, docs) {
+        console.log('Found the following records');
+        // TODO: check docs isn't an empty array
+        docs[0].castAndCrew.forEach(person => {
+          console.log(`...${person}`);
+        });
+      });
+
+    db.close();
+  });
+};
