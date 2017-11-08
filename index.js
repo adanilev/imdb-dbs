@@ -19,4 +19,7 @@ var mongo = require('./src/mongo/queries');
 // mongo.getCastAndCrew('tt0000627');
 
 // query 6
-mongo.getProlificPeriodActor(1900, 1915);
+// mongo.getProlificPeriodActor(1900, 1915);
+
+// query 7
+mongo.getProlificGenreActors('Short');

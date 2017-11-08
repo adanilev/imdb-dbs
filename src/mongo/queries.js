@@ -157,12 +157,17 @@ exports.getProlificGenreActors = function(genre) {
     db
       .collection('movies')
       .aggregate([
-        //
+        { $match: { genres: genre } },
+        { $project: { cast: 1 } },
+        { $unwind: '$cast' },
+        { $group: { _id: '$cast', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 5 }
       ])
       .toArray(function(err, docs) {
-        console.log('blah:');
+        console.log('The 5 most prolific actors in that genre are:');
         docs.forEach(actor => {
-          console.log(`...${actor._id} was in ${count} movies`);
+          console.log(`...${actor._id} was in ${actor.count} movies`);
         });
       });
 
