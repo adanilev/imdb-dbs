@@ -22,4 +22,7 @@ var mongo = require('./src/mongo/queries');
 // mongo.getProlificPeriodActor(1900, 1915);
 
 // query 7
-mongo.getProlificGenreActors('Short');
+// mongo.getProlificGenreActors('Short');
+
+// query 8
+mongo.getMostFrequentColleagues('nm0567363', 5);

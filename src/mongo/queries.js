@@ -174,3 +174,60 @@ exports.getProlificGenreActors = function(genre) {
     db.close();
   });
 };
+
+// Query 8
+exports.getMostFrequentColleagues = function(person, numResults) {
+  var MongoClient = require('mongodb').MongoClient;
+
+  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
+    db
+      .collection('movies')
+      .aggregate([
+        {
+          $match: {
+            $or: [{ cast: person }, { directors: person }, { writers: person }]
+          }
+        },
+        {
+          $project: {
+            tconst: 1,
+            primaryTitle: 1,
+            castAndCrew: {
+              $concatArrays: [
+                { $ifNull: ['$cast', []] },
+                { $ifNull: ['$directors', []] },
+                { $ifNull: ['$writers', []] }
+              ]
+            }
+          }
+        },
+        { $unwind: '$castAndCrew' },
+        { $match: { castAndCrew: { $ne: person } } },
+        {
+          $group: {
+            _id: '$tconst',
+            castAndCrew: { $addToSet: '$castAndCrew' }
+          }
+        },
+        { $unwind: '$castAndCrew' },
+        {
+          $group: {
+            _id: '$castAndCrew',
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { count: -1 } },
+        { $limit: numResults }
+      ])
+      .toArray(function(err, docs) {
+        console.log('The 5 people they worked with most often are:');
+        docs.forEach(actor => {
+          console.log(
+            `...${actor._id} worked on ${actor.count} movies together`
+          );
+        });
+      });
+
+    db.close();
+  });
+};
