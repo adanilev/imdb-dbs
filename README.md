@@ -5,6 +5,33 @@ Loading and querying IMDB data using different databases just for kicks.
 A work in progress...
 
 
+## To Be
+
+### Prerequisites
+1. Docker
+1. npm
+1. etc...
+
+### Setup
+* Clone this repo
+```bash
+git clone ...
+```
+
+* Install npm dependencies and build the project
+```bash
+cd imdb-dbs
+npm install
+npm run build
+```
+
+* Start up the databases and front-end
+```bash
+npm start
+```
+
+* Navigate to <localhost:3000>
+
 ## Queries
 
 1. Show the latest 10 movies a given actor has been in
@@ -39,7 +66,7 @@ Start the database and import the data. Invoke with -s flag to use truncated dat
 ```
 
 ### Schema
-
+```
 movies {
   _id
   tconst
@@ -67,10 +94,9 @@ actors {
   birthYear
   deathYear
   primaryProfession
-  knownForTitles [refs to Movies.tconst]
-  
+  knownForTitles [refs to Movies.tconst] 
 }
-
+```
 
 Information courtesy of
 IMDb

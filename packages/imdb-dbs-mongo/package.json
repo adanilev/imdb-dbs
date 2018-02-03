@@ -1,0 +1,12 @@
+{
+  "name": "imdb-dbs-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "./scripts/start -s",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "adanilev",
+  "license": "MIT"
+}

@@ -1,6 +1,5 @@
-data-files/*
 node_modules/
-.env
 .DS_Store
-src/mongo/tmp.js
-src/mongo/tmp2.js
+.env
+data/*
+packages/imdb-dbs-tmp/

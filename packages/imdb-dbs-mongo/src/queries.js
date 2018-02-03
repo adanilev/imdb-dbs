@@ -56,8 +56,9 @@ exports.getTopRatedMoviesWithNVotes = function(numVotes) {
         console.log('Found the following records');
         docs.forEach(movie => {
           console.log(
-            `...numVotes: ${movie.ratings.numVotes} rating: ${movie.ratings
-              .averageRating} - ${movie.primaryTitle}`
+            `...numVotes: ${movie.ratings.numVotes} rating: ${
+              movie.ratings.averageRating
+            } - ${movie.primaryTitle}`
           );
         });
       });
@@ -230,4 +231,9 @@ exports.getMostFrequentColleagues = function(person, numResults) {
 
     db.close();
   });
+};
+
+// Query 9
+exports.getSixDegreesOfKevin = function(actor1, actor2) {
+  //
 };
