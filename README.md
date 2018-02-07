@@ -1,36 +1,22 @@
 # imdb-dbs
 
-Loading and querying IMDB data using different databases just for kicks.
+Download IMDB's public data from AWS, import it to different types of databases and query it.
 
-A work in progress...
+...a work in progress...to help me learn stuff...
 
+## Prerequisites
+1. AWS account and credentials (to download the data from IMDB - requester pays for the download)
+1. Docker 17.12.0
+1. npm 5.6.0
+1. node 8.9.0
 
-## To Be
+## Setup
+* This is a monorepo, so check out the instructions in the relevant DB package (e.g. ./packages/imdb-dbs-mongo)
 
-### Prerequisites
-1. Docker
-1. npm
-1. etc...
-
-### Setup
-* Clone this repo
-```bash
-git clone ...
-```
-
-* Install npm dependencies and build the project
-```bash
-cd imdb-dbs
-npm install
-npm run build
-```
-
-* Start up the databases and front-end
-```bash
-npm start
-```
-
-* Navigate to <localhost:3000>
+## Databases
+1. MongoDB - pretty much there
+1. neo4j - next up
+1. PostgreSQL - one day
 
 ## Queries
 
@@ -45,58 +31,6 @@ npm start
 1. 6 degrees of Kevin Bacon - given 2 actors, find the shortest link between them
 
 
-## Pre-requisites
-* Docker
-* npm
-* Node
-* An AWS account and keys **OR** a copy of zipped IMDB datasets
-
-
-## Install
-1. Clone this repo and cd to it
-1. Download the IMDB datasets and unzip them into ./data-files/originals
-
-
-## Mongo
-
-Start the database and import the data. Invoke with -s flag to use truncated datasets to make testing quicker
-
-```bash
-./mongo/start.sh
-```
-
-### Schema
-```
-movies {
-  _id
-  tconst
-  titleType
-  primaryTitle
-  originalTitle
-  isAdult
-  startYear
-  endYear
-  runtimeMinutes
-  genres[]
-  ratings {
-    avgRating
-    numVotes
-  }
-  cast[]
-  akas[]
-}
-
-
-actors {
-  _id
-  nconst
-  primaryName
-  birthYear
-  deathYear
-  primaryProfession
-  knownForTitles [refs to Movies.tconst] 
-}
-```
 
 Information courtesy of
 IMDb

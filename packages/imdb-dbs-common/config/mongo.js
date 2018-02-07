@@ -1,4 +1,6 @@
 module.exports = {
+  dbName: 'imdb',
+  numTruncatedRows: 1001,
   datasets: [
     {
       filename: "title.basics.tsv",

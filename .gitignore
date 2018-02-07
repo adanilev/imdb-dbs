@@ -1,5 +1,17 @@
-node_modules/
-.DS_Store
-.env
-data/*
+# for testing
 packages/imdb-dbs-tmp/
+
+# imdb data files and modified versions
+data/*
+
+# node
+node_modules/
+
+# mac
+.DS_Store
+
+# dotenv files
+.env
+
+# lerna
+lerna-debug.log

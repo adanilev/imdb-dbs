@@ -1,99 +1,108 @@
-'use strict';
+'use strict'
+
+require('dotenv-expand')(require('dotenv').config());
+const config = require('imdb-dbs-common').config.mongo;
 
 // Query 1
-exports.getActorsLatestTenMovies = function(actorId) {
+exports.getActorsLatestTenMovies = function (actorId) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+
+    client
+      .db(config.dbName)
       .collection('movies')
       .find({ cast: actorId })
       .sort({ startYear: 1 })
       .limit(10)
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('Found the following records');
         docs.forEach(movie => {
           console.log(`...${movie.primaryTitle}`);
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 2
-exports.getActorsTopRatedMovies = function(actorId) {
+exports.getActorsTopRatedMovies = function (actorId) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .find({ cast: actorId })
       .sort({ 'ratings.averageRating': -1, 'ratings.numVotes': -1 })
       .limit(10)
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('Found the following records');
         docs.forEach(movie => {
           console.log(`...${movie.primaryTitle}`);
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 3
-exports.getTopRatedMoviesWithNVotes = function(numVotes) {
+exports.getTopRatedMoviesWithNVotes = function (numVotes) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .find({ 'ratings.numVotes': { $gt: numVotes } })
       .sort({ 'ratings.averageRating': -1 })
       .limit(10)
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('Found the following records');
         docs.forEach(movie => {
           console.log(
             `...numVotes: ${movie.ratings.numVotes} rating: ${
-              movie.ratings.averageRating
+            movie.ratings.averageRating
             } - ${movie.primaryTitle}`
           );
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 4
-exports.getCostarredMovies = function(actorId1, actorId2) {
+exports.getCostarredMovies = function (actorId1, actorId2) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .aggregate([
         { $match: { $and: [{ cast: actorId1 }, { cast: actorId2 }] } }
       ])
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('Found the following records');
         docs.forEach(movie => {
           console.log(`...${movie.primaryTitle}`);
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 5
-exports.getCastAndCrew = function(titleId) {
+exports.getCastAndCrew = function (titleId) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .aggregate([
         {
@@ -105,7 +114,7 @@ exports.getCastAndCrew = function(titleId) {
           }
         }
       ])
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('Found the following records');
         // TODO: check docs isn't an empty array
         docs[0].castAndCrew.forEach(person => {
@@ -113,16 +122,17 @@ exports.getCastAndCrew = function(titleId) {
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 6
-exports.getProlificPeriodActor = function(startYear, endYear) {
+exports.getProlificPeriodActor = function (startYear, endYear) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .aggregate([
         {
@@ -139,23 +149,24 @@ exports.getProlificPeriodActor = function(startYear, endYear) {
         { $sort: { count: -1 } },
         { $limit: 1 }
       ])
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('Most prolific actor in that period is:');
         docs.forEach(actor => {
           console.log(`...${actor._id} was in ${actor.count} movies`);
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 7
-exports.getProlificGenreActors = function(genre) {
+exports.getProlificGenreActors = function (genre) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .aggregate([
         { $match: { genres: genre } },
@@ -165,23 +176,24 @@ exports.getProlificGenreActors = function(genre) {
         { $sort: { count: -1 } },
         { $limit: 5 }
       ])
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('The 5 most prolific actors in that genre are:');
         docs.forEach(actor => {
           console.log(`...${actor._id} was in ${actor.count} movies`);
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 8
-exports.getMostFrequentColleagues = function(person, numResults) {
+exports.getMostFrequentColleagues = function (person, numResults) {
   var MongoClient = require('mongodb').MongoClient;
 
-  MongoClient.connect(process.env.MONGO_DB_URL, function(err, db) {
-    db
+  MongoClient.connect(process.env.MONGO_URL, function (err, client) {
+    client
+      .db(config.dbName)
       .collection('movies')
       .aggregate([
         {
@@ -220,7 +232,7 @@ exports.getMostFrequentColleagues = function(person, numResults) {
         { $sort: { count: -1 } },
         { $limit: numResults }
       ])
-      .toArray(function(err, docs) {
+      .toArray(function (err, docs) {
         console.log('The 5 people they worked with most often are:');
         docs.forEach(actor => {
           console.log(
@@ -229,11 +241,11 @@ exports.getMostFrequentColleagues = function(person, numResults) {
         });
       });
 
-    db.close();
+    client.close();
   });
 };
 
 // Query 9
-exports.getSixDegreesOfKevin = function(actor1, actor2) {
+exports.getSixDegreesOf = function (actor1, actor2) {
   //
 };

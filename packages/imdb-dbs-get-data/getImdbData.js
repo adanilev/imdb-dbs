@@ -5,7 +5,7 @@ var s3 = new AWS.S3();
 
 var imdbFolder = 'documents/v1/current/';
 var outputDirectory =
-  process.env.IMDB_DBS_HOME + '/data-files/zipped-originals';
+  process.env.IMDB_DATA_DIR + '/data-files/zipped-originals';
 
 var datasets = [
   'title.basics.tsv.gz',
@@ -24,7 +24,7 @@ datasets.forEach(dataset => {
     RequestPayer: 'requester'
   };
 
-  s3.getObject(params, function(err, data) {
+  s3.getObject(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
     } else {

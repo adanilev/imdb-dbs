@@ -1,0 +1,15 @@
+{
+  "name": "imdb-dbs-get-data",
+  "version": "1.0.0",
+  "description": "Download the public IMDB dataset from AWS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adanilev/imdb-dbs/tree/master/packages/imdb-dbs-get-data"
+  },
+  "author": "adanilev",
+  "license": "MIT"
+}

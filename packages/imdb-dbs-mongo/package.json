@@ -1,12 +1,29 @@
 {
   "name": "imdb-dbs-mongo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Loads the IMDB public dataset into a MongoDB instance and exposes some queries.",
   "main": "index.js",
   "scripts": {
-    "build": "./scripts/start -s",
+    "start": "node -e 'require(\"./scripts/start-db\").start()'",
+    "stop": "node ./scripts/stop-db.js",
+    "build": "node ./scripts/build-db.js",
+    "destroy": "node ./scripts/destroy-db.js",
+    "rebuild": "node ./scripts/rebuild-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adanilev/imdb-dbs/tree/master/packages/imdb-dbs-mongo"
+  },
   "author": "adanilev",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "dotenv": "^5.0.0",
+    "dotenv-expand": "^4.0.1",
+    "firstline": "^1.2.1",
+    "imdb-dbs-common": "^1.0.0",
+    "mongodb": "^3.0.2",
+    "shelljs": "^0.8.1"
+  }
 }
