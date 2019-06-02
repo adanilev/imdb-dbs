@@ -3,12 +3,15 @@
 require('dotenv-expand')(require('dotenv').config());
 
 module.exports = require('./src/queries');
+module.exports = require('./src/helper-queries');
 
 // How to call:
 
 // const queries = require('imdb-dbs-mongo');
+// const queries = require('./src/queries');
 
 // queries.getActorsLatestTenMovies('nm1588970');
+// queries.getActorsLatestTenMovies('nm0000001');
 // queries.getActorsTopRatedMovies('nm1588970');
 // queries.getTopRatedMoviesWithNVotes(10000);
 // queries.getCostarredMovies('nm0302368', 'nm0001908');

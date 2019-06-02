@@ -6,6 +6,7 @@ const config = require('imdb-dbs-common').config.mongo;
 const fs = require('fs');
 const async = require('async');
 
+const util = require('imdb-dbs-common').utilityFuncs;
 const startDb = require('./start-db');
 const importData = require('./import-data');
 const preprocess = require('./preprocess');
@@ -15,7 +16,11 @@ const preprocess = require('./preprocess');
 async.series(
   [
     function (next) {
-      importData.createTruncatedDatafiles(config.numTruncatedRows, next);
+      if (util.toBoolean(process.env.USE_TRUNC_FILES)) {
+        importData.createTruncatedDatafiles(config.numTruncatedRows, next);
+      } else {
+        next();
+      }
     },
     function (next) {
       startDb.start(next);

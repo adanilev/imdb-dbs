@@ -1,13 +1,11 @@
-var AWS = require('aws-sdk');
-var fs = require('fs');
+const fs = require('fs');
+const s3 = new require('aws-sdk').S3();
 
-var s3 = new AWS.S3();
+const imdbFolder = 'documents/v1/current/';
+const outputDirectory =
+  process.env.IMDB_DATA_DIR + '/zipped-originals';
 
-var imdbFolder = 'documents/v1/current/';
-var outputDirectory =
-  process.env.IMDB_DATA_DIR + '/data-files/zipped-originals';
-
-var datasets = [
+const datasets = [
   'title.basics.tsv.gz',
   'title.akas.tsv.gz',
   'title.crew.tsv.gz',
@@ -18,7 +16,7 @@ var datasets = [
 ];
 
 datasets.forEach(dataset => {
-  var params = {
+  let params = {
     Bucket: 'imdb-datasets',
     Key: imdbFolder + dataset,
     RequestPayer: 'requester'
@@ -29,6 +27,7 @@ datasets.forEach(dataset => {
       console.log(err, err.stack);
     } else {
       fs.writeFile(outputDirectory + dataset, data.Body, () => {
+        //
         console.log('Done writing ' + dataset);
       });
     }

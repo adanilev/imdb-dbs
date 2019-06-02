@@ -115,8 +115,9 @@ exports.getCastAndCrew = function (titleId) {
         }
       ])
       .toArray(function (err, docs) {
+        if (docs.length <= 0) throw new Error('No cast and crew found. Something is wrong');
+
         console.log('Found the following records');
-        // TODO: check docs isn't an empty array
         docs[0].castAndCrew.forEach(person => {
           console.log(`...${person}`);
         });

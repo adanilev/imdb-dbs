@@ -10,7 +10,6 @@ const MongoClient = require('mongodb').MongoClient;
 exports.preprocess = function (callback) {
   console.log('Pre-processing data');
   // Run the functions in this array one after the other
-  // TODO: create the DB connection/client up here so all the funcs below don't have to create anew
   async.waterfall(
     [
       createMongoClient,
@@ -107,6 +106,7 @@ function setNulls(client, fieldData, callback) {
           if (err) {
             console.error('Error in setNulls: ' + err);
           } else {
+            console.log(`...Done setting nulls for ${collectionFieldData.collectionName}`);
             cbk();
           }
         }
@@ -212,10 +212,30 @@ function embedRatings(client, callback) {
         $out: 'titleBasics'
       }
     ])
-    .next((err, result) => {
+    .hasNext()
+    .then(() => {
       console.log('...Done embedding ratings');
       callback(null, client);
     })
+    .catch((err) => {
+      handleError('embedRatings', err);
+    });
+
+
+  // , (err, cursor) => {
+  //   if (err) throw new Error(`Error in embedRatings: ${err}`);
+
+  //   cursor.toArray((err, documents) => {
+  //     if (err) throw new Error(`Error in embedRatings next: ${err}`);
+  //     console.log('...Done embedding ratings');
+  //     callback(null, client);
+  //   });
+  // });
+
+  // .next((err, result) => {
+  //   console.log('...Done embedding ratings');
+  //   callback(null, client);
+  // })
 }
 
 function embedCast(client, callback) {
@@ -252,9 +272,13 @@ function embedCast(client, callback) {
         $out: 'titleBasics'
       }
     ])
-    .next((err, result) => {
+    .hasNext()
+    .then(() => {
       console.log('...Done embedding cast');
       callback(null, client);
+    })
+    .catch((err) => {
+      handleError('embedCast', err);
     });
 }
 
@@ -292,9 +316,13 @@ function embedAkas(client, callback) {
         $out: 'titleBasics'
       }
     ])
-    .next((err, result) => {
+    .hasNext()
+    .then(() => {
       console.log('...Done embedding alternative titles');
       callback(null, client);
+    })
+    .catch((err) => {
+      handleError('embedAkas', err);
     });
 }
 
@@ -349,9 +377,13 @@ function embedCrew(client, callback) {
         $out: 'titleBasics'
       }
     ])
-    .next((err, result) => {
+    .hasNext()
+    .then(() => {
       console.log('...Done embedding crew');
       callback(null, client);
+    })
+    .catch((err) => {
+      handleError('embedCrew', err);
     });
 }
 
@@ -419,4 +451,8 @@ function renameCollections(client, callback) {
       }
     }
   );
+}
+
+function handleError(functionName, err) {
+  throw new Error(`Error encountered in ${functionName}:\n ${err}`)
 }

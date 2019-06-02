@@ -2,11 +2,11 @@
 
 require('dotenv-expand')(require('dotenv').config());
 const config = require('imdb-dbs-common').config.mongo;
-const utility = require('imdb-dbs-common').utilityFuncs;
+const util = require('imdb-dbs-common').utilityFuncs;
 const shell = require('shelljs');
 
 module.exports.start = (cb) => {
-  const importDir = utility.toBoolean(process.env.USE_TRUNC_FILES) ?
+  const importDir = util.toBoolean(process.env.USE_TRUNC_FILES) ?
     `${process.env.IMDB_DATA_DIR}/truncated` :
     `${process.env.IMDB_DATA_DIR}/originals`;
 
